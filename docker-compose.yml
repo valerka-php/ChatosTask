@@ -1,0 +1,33 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.1'
+services:
+    mysql:
+        image: 'mysql:5.7'
+        working_dir: /application
+        volumes:
+            - '/mysql-data:/var/lib/mysql'
+        environment:
+            - MYSQL_ROOT_PASSWORD=0000
+            - MYSQL_DATABASE=quest_db
+            - MYSQL_USER=test
+            - MYSQL_PASSWORD=qwerty
+        ports:
+            - '10008:3306'
+
+    webserver:
+        image: 'nginx:alpine'
+        working_dir: /application
+        volumes:
+            - './server:/application'
+            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+        ports:
+            - '15000:80'
+
+    php-fpm:
+        build: phpdocker/php-fpm
+        working_dir: /application
+        volumes:
+            - './server:/application'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini'
